@@ -5,13 +5,14 @@
 # container to that volume storage.
 #
 
+# to add modules to a running container use this:
+# docker exec -ti jupyter-notebook /opt/ds/bin/pip install elasticsearch
+
 CONTAINER_NAME=jupyter-notebook
 
 # exit if container already running
-JUPYTER_RUNNING_CONTAINER=$(docker ps | grep dreamy_franklinddd || true)
-
-
-if [[ ! -z JUPYTER_RUNNING_CONTAINER ]]; then
+docker ps    | grep -q jupyter-notebook && IS_RUNNING=true || IS_RUNNING=false
+if [[ "${IS_RUNNING}" = "true" ]]; then
   echo "container ${CONTAINER_NAME} is already running, goto http://localhost:8888 to open the notebook"
   exit 0
 fi
@@ -22,13 +23,26 @@ if [[ ! -d notebooks ]]; then
   mkdir notebooks
 fi
 
-sleep 30s
+# start container if exists
+docker ps -a | grep -q jupyter-notebook && IS_STOPPED=true || IS_RUNNING=false
+if [[ "${IS_STOPPED}" = "true" ]]; then
+  echo "container ${CONTAINER_NAME} stopped. starting ..."
+  docker start ${CONTAINER_NAME}
+  echo "goto http://localhost:8888 to open the notebook"
+  exit 0
+fi
 
+# creating a new container
 echo "staring container ${CONTAINER_NAME}"
 docker run --name ${CONTAINER_NAME} -d \
            -p 8888:8888 \
            -v $(readlink -f notebooks):/home/ds/notebooks dataquestio/python3-starter
 
+
+
 echo "container ${CONTAINER_NAME} is running"
 echo "to access the notebook goto http://localhost:8888"
-echo ""
+COMMAND=$(echo -n "/opt/ds/bin/pip install " ; for line in $(cat requirements.txt) ; do echo -n "$line "  ; done)
+echo "installing pip packages from requirements.txt"
+echo "command: ${COMMAND}"
+docker exec -ti ${CONTAINER_NAME} ${COMMAND}
