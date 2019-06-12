@@ -22,7 +22,7 @@ Bash script provided to launch a docker container running jupyter-noteboook. The
 ~/python3-course $ ./start-notebook.sh
 
 ```
-Once running, open http://localhost:8888 to access the jupyter-notebook. if installation of packages is necessary it can be done by invoking pip inside the container:
+Once running, open http://localhost:8888 to access the jupyter-notebook. requirements.txt is a list of packages to install when launching the container. if installation of packages is necessary during runtime - it can be done by invoking pip inside the container:
 
 ```bash
 ~/python3-course $ docker exec -ti jupyter-notebook /opt/ds/bin/pip install elasticsearch

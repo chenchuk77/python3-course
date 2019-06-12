@@ -75,9 +75,9 @@ def decrypt(encrypted_text, key):
 
 def main():
     # open 2 files to have a lot of text
-    with open("book3", "r") as f:
+    with open("data/book3", "r") as f:
         clear_text = f.read()
-    with open("book2", "r") as f:
+    with open("data/book2", "r") as f:
         clear_text += f.read()
 
     print ('clear_text: {}'.format(clear_text)[:40])
