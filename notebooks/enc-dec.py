@@ -1,3 +1,4 @@
+import os
 from random import shuffle
 
 def get_ordered_values_list(d):
@@ -58,30 +59,37 @@ def decrypt(encrypted_text, key):
     p_list = get_ordered_values_list(p)
     c_list = get_ordered_values_list(counts)
 
+    print (p_list)
+    print (c_list)
+    
     # build the output string by switch known english letters and preserve the rest
-    for letter in enc_text:
+    print (len(encrypted_text))
+    for letter in encrypted_text:
         if letter in c_list:
             # append letter with same index from the probability list
             output += p_list[c_list.index(letter)]
         else:
             output += letter
+    print (len(output))
     return output
 
-dec_text=''
-enc_text=''
-k = ''
- 
-#clear_text = 'hello'
-print ('clear_text: {}'.format(clear_text)[:40])
+def main():
+    # open 2 files to have a lot of text
+    with open("book3", "r") as f:
+        clear_text = f.read()
+    with open("book2", "r") as f:
+        clear_text += f.read()
 
-# encryption
-k = get_enc_key()
-enc_text = encrypt(clear_text, k)
-#print ('clear: ', clear_text)
-print ('encrypted: {}'.format(enc_text)[:40])
+    print ('clear_text: {}'.format(clear_text)[:40])
 
-# decryption
-#letters = get_ordered_letters_list(p)
-#print ('letters: ', letters, end = ' ')
-dec_text = decrypt(enc_text, k)
-print ('decrypted: {}'.format(dec_text)[:40])
+    # testing encryption
+    k = get_enc_key()
+    enc_text = encrypt(clear_text, k)
+    print ('encrypted: {}'.format(enc_text)[:40])
+
+    # testing decryption
+    dec_text = decrypt(enc_text, k)
+    print ('decrypted: {}'.format(dec_text)[:40])
+    
+main()
+
